@@ -1,9 +1,7 @@
 package com.example.android.quakereport;
 
-import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.GradientDrawable;
@@ -19,12 +17,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -32,7 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class NewsAdapter extends ArrayAdapter<News> {
+public class NewsAdapter extends ArrayAdapter<News> implements LoaderManager.LoaderCallbacks<Bitmap> {
     private Context mContext;
 
     /**
@@ -53,6 +54,7 @@ public class NewsAdapter extends ArrayAdapter<News> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final int mPosition = position;
+
         // Check if there is an existing list item view (called convertView) that we can reuse,
         // otherwise, inflate a new list item layout.
         View listItemView = convertView;
@@ -71,27 +73,22 @@ public class NewsAdapter extends ArrayAdapter<News> {
         ImageView newsThumbnailView = listItemView.findViewById(R.id.news_thumbnail);
         Button buttonViewMoreView = listItemView.findViewById(R.id.news_view_more);
 
+        // Initial "Loading..." image
         newsThumbnailView.setImageResource(R.drawable.loading);
-
 
         buttonViewMoreView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //your click action
 
-                // if you have different click action at different positions then
-                    //click action of 1st list item on button click
-                    Log.e("xxxxxxx", "Problem parsing the earthquake JSON results");
+                // Convert the String URL into a URI object (to pass into the Intent constructor)
+                Uri newsWebUrl = Uri.parse( getItem(mPosition).getmWebUrl());
 
-                    // Convert the String URL into a URI object (to pass into the Intent constructor)
-                    Uri newsWebUrl = Uri.parse( getItem(mPosition).getmWebUrl());
+                // Create a new intent to view the earthquake URI
+                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, newsWebUrl);
 
-                    // Create a new intent to view the earthquake URI
-                    Intent websiteIntent = new Intent(Intent.ACTION_VIEW, newsWebUrl);
-
-                    // Send the intent to launch a new activity
-                    mContext.startActivity(websiteIntent);
-                }
+                // Send the intent to launch a new activity
+                mContext.startActivity(websiteIntent);
+            }
         });
 
         new ImageDownloadTask(newsThumbnailView).execute(currentNews.getmThumbnail());
@@ -180,6 +177,7 @@ public class NewsAdapter extends ArrayAdapter<News> {
 
         // In Java code, you can refer to the colors that you defined in the colors.xml file using
         // the color resource ID
+        // ToDO: add more section names
         switch (sectionName) {
             case "GAMES":
                 magnitudeColorResourceId = R.color.magnitude1;
@@ -220,6 +218,24 @@ public class NewsAdapter extends ArrayAdapter<News> {
         return ContextCompat.getColor(getContext(), magnitudeColorResourceId);
     }
 
+    @NonNull
+    @Override
+    public Loader<Bitmap> onCreateLoader(int id, @Nullable Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Bitmap> loader, Bitmap data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Bitmap> loader) {
+
+    }
+
+
+    // ToDO: replace this with AsyncLoaderTask
     // Defines the background task to download and then load the image within the ImageView
     private class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
         ImageView newsThumbnail;
@@ -261,5 +277,7 @@ public class NewsAdapter extends ArrayAdapter<News> {
             newsThumbnail.setImageBitmap(result);
         }
     }
+
+
 }
 

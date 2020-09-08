@@ -17,6 +17,8 @@
         android:layout_height="match_parent"
         android:divider="@null"
         android:dividerHeight="0dp"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <!-- Empty view is only visible when the list has no items. -->
     <TextView
@@ -34,5 +36,4 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </RelativeLayout>

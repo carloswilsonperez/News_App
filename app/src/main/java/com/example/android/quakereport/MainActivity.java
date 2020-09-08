@@ -16,9 +16,6 @@
 
 package com.example.android.quakereport;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -28,14 +25,23 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
-import android.widget.TextView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
+
+/*import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;*/
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity implements LoaderCallbacks<List<News>>, SwipeRefreshLayout.OnRefreshListener {
@@ -69,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
 
         swipe = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         swipe.setOnRefreshListener(this);
-        swipe.setRefreshing(false);
         swipe.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
 
 
@@ -85,6 +90,9 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         earthquakeListView.setAdapter(mAdapter);
+
+
+
 
         // Set an item click listener on the ListView, which sends an intent to a web browser
         // to open a website with more information about the selected earthquake.
